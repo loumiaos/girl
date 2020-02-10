@@ -35,6 +35,10 @@ go get -u github.com/jinzhu/gorm
 echo begin install websocket module
 go get github.com/gorilla/websocket
 
+#proto
+echo begin install protobuf module
+go get -u github.com/golang/protobuf/protoc-gen-go
+
 #log
 echo begin install logger module
 go get github.com/phachon/go-logger

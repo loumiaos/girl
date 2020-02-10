@@ -17,7 +17,7 @@ var (
 )
 
 type Robot struct {
-	client     *network.ClientSocket
+	client     *network.WebClient //如果使用socket，请使用ClientSocket
 	m_ClientId int
 }
 
@@ -47,7 +47,7 @@ func PacketFunc(socketid int, buff []byte, nlen int) bool {
 }
 
 func (self *Robot) Login() {
-	self.client = new(network.ClientSocket)
+	self.client = new(network.WebClient)
 	self.client.SetClientId(self.m_ClientId)
 	self.client.Init("127.0.0.1", 6789)
 	self.client.SetConnectType(network.CLIENT_CONNECT)

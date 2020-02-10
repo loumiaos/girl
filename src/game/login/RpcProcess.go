@@ -16,7 +16,7 @@ func handlerLogin(igo gorpc.IGoRoutine, clientid int, data interface{}) interfac
 	if userId == 0 {
 		resp.ErrorStr = "密码错误"
 	} else {
-		resp.UserID = int32(userId)
+		resp.UserID = userId
 	}
 	loumiao.SendClient(igo, clientid, resp)
 	return nil

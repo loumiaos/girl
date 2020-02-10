@@ -25,13 +25,13 @@ func handlerLogin(igo gorpc.IGoRoutine, clientid int, data interface{}) interfac
 	user.OnLogin()
 
 	resp := &msg.S_C_Login{}
-	resp.UserID = int32(user.ID)
+	resp.UserID = user.ID
 	resp.Gold = user.Gold
 	resp.Coin = user.Coin
 	resp.Money = user.Money
 	resp.HeadIconUrl = user.HeadIconUrl
 	resp.UnderWrite = user.UnderWrite
-	resp.Sex = int32(user.Sex)
+	resp.Sex = user.Sex
 	resp.ActiveFlag = user.ActiveFlag
 	resp.NickName = user.NickName
 
