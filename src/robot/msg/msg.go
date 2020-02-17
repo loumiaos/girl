@@ -9,4 +9,6 @@ func init() {
 	message.RegisterPacket(&A_C_Login{})
 	message.RegisterPacket(&C_S_Login{})
 	message.RegisterPacket(&S_C_Login{})
+	message.RegisterPacket(&C_S_JoinRoom{})
+	message.RegisterPacket(&S_C_JoinRoom{})
 }

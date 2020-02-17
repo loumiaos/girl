@@ -2,8 +2,9 @@ package main
 
 import (
 	"game/config"
+	"game/room"
 
-	"game/dblogic"
+	"game/db"
 	"game/dbmodel"
 	"game/login"
 	"game/world"
@@ -29,15 +30,16 @@ func init() {
 }
 
 func main() {
-	log.Info("game run!")
+	log.Info("server run!")
 
 	mysqldb.Dial(dbmodel.Models)
 	//redisdb.DialDefault()
 
+	loumiao.Prepare(new(db.DBServer), "DBServer", true)
 	loumiao.Prepare(new(gate.GateServer), "GateServer", false)
 	loumiao.Prepare(new(login.LoginServer), "LoginServer", false)
-	loumiao.Prepare(new(dblogic.DB_Player), "DB_Player", true)
-	loumiao.Prepare(new(world.GameServer), "GameServer", false)
+	loumiao.Prepare(new(world.WorldServer), "WorldServer", false)
+	loumiao.Prepare(new(room.RoomServer), "RoomServer", false)
 
 	loumiao.Run()
 }

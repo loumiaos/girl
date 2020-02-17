@@ -8,30 +8,31 @@ import (
 )
 
 var (
-	This *GameServer
+	This *WorldServer
 )
 
-type GameServer struct {
+type WorldServer struct {
 	gorpc.GoRoutineLogic
 }
 
 //在这里注册网络消息
-func (self *GameServer) DoInit() {
-	log.Info("GameServer DoInit")
+func (self *WorldServer) DoInit() {
+	log.Info("WorldServer DoInit")
 	This = self
 
 	loumiao.RegisterNetHandler(self, "C_S_Login", handlerLogin)
+	loumiao.RegisterNetHandler(self, "C_S_JoinRoom", handlerJoinRoom)
 }
 
 //在这里注册rpc消息
-func (self *GameServer) DoRegsiter() {
+func (self *WorldServer) DoRegsiter() {
 	//self.Register("handlerLogin", handlerLogin)
 }
 
-func (self *GameServer) DoDestory() {
-	log.Info("GameServer destory")
+func (self *WorldServer) DoDestory() {
+	log.Info("WorldServer destory")
 }
 
-func (self *GameServer) Update() {
+func (self *WorldServer) Update() {
 
 }

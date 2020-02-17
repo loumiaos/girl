@@ -65,6 +65,7 @@ func register() {
 	hanlders["CONNECT"] = onConnect
 	hanlders["A_C_Login"] = onLoginAccount
 	hanlders["S_C_Login"] = onLoginPlayer
+	hanlders["S_C_JoinRoom"] = onJoinRoom
 }
 
 func init() {
@@ -89,17 +90,28 @@ func onConnect(robot *Robot, data interface{}) {
 }
 
 func onLoginAccount(robot *Robot, data interface{}) {
-	loginData := data.(*msg.A_C_Login)
-	log.Debugf("onLoginAccount: %v", loginData)
+	resp := data.(*msg.A_C_Login)
+	log.Debugf("onLoginAccount: %v", resp)
 
 	login := new(msg.C_S_Login)
-	login.UserID = loginData.UserID
+	login.UserID = resp.UserID
 	robot.client.SendMsg("C_S_Login", login)
 }
 
 func onLoginPlayer(robot *Robot, data interface{}) {
-	loginData := data.(*msg.S_C_Login)
-	log.Debugf("onLoginPlayer: %v", loginData)
+	resp := data.(*msg.S_C_Login)
+	log.Debugf("onLoginPlayer: %v", resp)
 
-	log.Debugf("登陆成功 %d", robot.m_ClientId)
+	log.Debugf("player登陆成功 %d", robot.m_ClientId)
+
+	req := new(msg.C_S_JoinRoom)
+	req.RoomId = 101001
+	req.Service = "niuniu"
+	robot.client.SendMsg("C_S_JoinRoom", req)
+}
+
+func onJoinRoom(robot *Robot, data interface{}) {
+	resp := data.(*msg.S_C_JoinRoom)
+	log.Debugf("onJoinRoom: %v", resp)
+
 }

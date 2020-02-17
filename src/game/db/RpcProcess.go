@@ -1,4 +1,4 @@
-package dblogic
+package db
 
 import (
 	"game/config"
@@ -62,4 +62,10 @@ func getPlayer(igo gorpc.IGoRoutine, data interface{}) interface{} {
 	mysqldb.DB.First(user, useid)
 
 	return user
+}
+
+func getGameCfg(igo gorpc.IGoRoutine, data interface{}) interface{} {
+	cfgs := make([]dbmodel.GameCfg, 1)
+	mysqldb.DB.Find(&cfgs)
+	return cfgs
 }

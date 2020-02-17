@@ -1,0 +1,1 @@
+insert into game_cfg (game_id, game_name, service_name, room_number, game_rule) values (101, "牛牛","niuniu",10,"")

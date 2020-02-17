@@ -1,33 +1,43 @@
 package msg
 
 type C_A_Login struct {
-	AccountName string `json:"account_name"`;
-	Password string;
-	Channel int;
-	LoginType int;
-	HeadIcon string;
-	Sex int;
-	NickName string;
+	AccountName string `json:"account_name"`
+	Password    string
+	Channel     int
+	LoginType   int
+	HeadIcon    string
+	Sex         int
+	NickName    string
 }
 
-type A_C_Login struct{
-	ErrorStr string;
-	UserID  int;
+type A_C_Login struct {
+	ErrCode int
+	UserID  int
 }
 
-type C_S_Login struct{
-	UserID int;
+type C_S_Login struct {
+	UserID int
 }
 
-message S_C_Login {
-	ErrorStr string;
-	UserID int;
-	Gold int64;    
-	Coin int64;
-	Money int64;
-	HeadIconUrl string;
-	UnderWrite string;
-	Sex int;
-	ActiveFlag int64;
-	NickName string;
+type S_C_Login struct {
+	ErrCode     int
+	UserID      int
+	Gold        int64
+	Coin        int64
+	Money       int64
+	HeadIconUrl string
+	UnderWrite  string
+	Sex         int
+	ActiveFlag  int64
+	NickName    string
+}
+
+type C_S_JoinRoom struct {
+	RoomId  int
+	Service string
+}
+
+type S_C_JoinRoom struct {
+	ErrCode int
+	RoomId  int
 }

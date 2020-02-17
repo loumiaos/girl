@@ -11,8 +11,8 @@ type C_A_Login struct {
 }
 
 type A_C_Login struct {
-	ErrorStr string
-	UserID   int
+	ErrCode int
+	UserID  int
 }
 
 type C_S_Login struct {
@@ -20,7 +20,7 @@ type C_S_Login struct {
 }
 
 type S_C_Login struct {
-	ErrorStr    string
+	ErrCode     int
 	UserID      int
 	Gold        int64
 	Coin        int64
@@ -30,4 +30,14 @@ type S_C_Login struct {
 	Sex         int
 	ActiveFlag  int64
 	NickName    string
+}
+
+type C_S_JoinRoom struct {
+	RoomId  int
+	Service string
+}
+
+type S_C_JoinRoom struct {
+	ErrCode int
+	RoomId  int
 }

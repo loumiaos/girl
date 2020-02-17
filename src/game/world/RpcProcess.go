@@ -2,21 +2,25 @@ package world
 
 import (
 	"game/dbmodel"
+	"game/define"
 	"game/msg"
 	"game/world/agent"
+
+	"github.com/snowyyj001/loumiao/log"
 
 	"github.com/snowyyj001/loumiao"
 	"github.com/snowyyj001/loumiao/gorpc"
 )
 
 func handlerLogin(igo gorpc.IGoRoutine, clientid int, data interface{}) interface{} {
-	loginData := data.(*msg.C_S_Login)
+	req := data.(*msg.C_S_Login)
 
-	user := agent.GetAgentMgr().GetAgent(int(loginData.UserID))
+	user := agent.GetAgentMgr().GetAgent(int(req.UserID))
 	if user == nil {
-		userData := igo.Call("DB_Player", "getPlayer", loginData.UserID).(*dbmodel.User)
+		userData := igo.Call("DBServer", "getPlayer", req.UserID).(*dbmodel.User)
 		user = &agent.Agent{
-			User: *userData,
+			User:     *userData,
+			ClientId: clientid,
 		}
 		agent.GetAgentMgr().AddAgent(user)
 	}
@@ -34,6 +38,36 @@ func handlerLogin(igo gorpc.IGoRoutine, clientid int, data interface{}) interfac
 	resp.Sex = user.Sex
 	resp.ActiveFlag = user.ActiveFlag
 	resp.NickName = user.NickName
+
+	loumiao.SendClient(igo, clientid, resp)
+
+	return nil
+}
+
+func handlerJoinRoom(igo gorpc.IGoRoutine, clientid int, data interface{}) interface{} {
+	player := agent.GetAgentMgr().GetAgentByServerId(clientid)
+	if player == nil {
+		log.Warningf("handlerJoinRoom: player[%d] is not exist", clientid)
+		return nil
+	}
+	req := data.(*msg.C_S_JoinRoom)
+	server := gorpc.GetGoRoutineMgr().GetRoutine(req.Service)
+
+	err := 0
+	for true {
+		if server == nil {
+			err = define.Err_Room_NoExist
+			break
+		}
+		m := gorpc.M{"user": *player, "roomid": req.RoomId}
+		igo.Call(req.Service, "joinRoom", m)
+
+		break
+	}
+
+	resp := &msg.S_C_JoinRoom{}
+	resp.RoomId = req.RoomId
+	resp.ErrCode = err
 
 	loumiao.SendClient(igo, clientid, resp)
 
