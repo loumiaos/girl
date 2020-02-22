@@ -27,6 +27,14 @@ func (self *GameServer) handlerJoinRoom(igo gorpc.IGoRoutine, data interface{}) 
 	if err == 0 {
 		self.Rooms[roomid].joinRoom(&player)
 		log.Debugf("玩家%d加入房间%d", player.ID, roomid)
+		self.Players[player.ClientId] = self.Rooms[roomid]
 	}
 	return err
+}
+
+func handlerSitDown(igo gorpc.IGoRoutine, clientid int, data interface{}) interface{} {
+	room := This.Players[clientid]
+	room.sitDown(clientid)
+
+	return nil
 }

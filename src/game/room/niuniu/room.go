@@ -1,18 +1,14 @@
 package niuniu
 
 import (
+	"game/msg"
 	"game/world/agent"
+
+	"github.com/snowyyj001/loumiao"
+	"github.com/snowyyj001/loumiao/log"
 )
 
-type FSMState int
 type FSMFunc func(dt int64)
-
-const (
-	FSM_Idle FSMState = iota
-	FSM_Fapai
-	FSM_Bipai
-	FSM_Result
-)
 
 type Room struct {
 	id int
@@ -20,47 +16,136 @@ type Room struct {
 	curState   FSMState
 	nextState  FSMState
 	curFsmFunc [3]FSMFunc
+	fsmTime    int64
+
+	agents   map[int]*Player
+	agentLen int
+
+	players   map[int]*Player
+	playerLen int
+
+	visiters   map[int]*Player
+	visiterLen int
 }
 
 func (self *Room) doStart(roomid int) {
 	self.id = roomid
+	self.agents = make(map[int]*Player)
+	self.players = make(map[int]*Player)
+	self.visiters = make(map[int]*Player)
 	self.curState = FSM_Idle
 	self.nextState = FSM_Idle
 	self.changeState()
 	self.curFsmFunc[0](0)
 }
 
-func (self *Room) SetState(state FSMState) {
-	self.nextState = state
-}
-
-func (self *Room) changeState() {
-	switch self.nextState {
-	case FSM_Idle:
-		self.curFsmFunc[0] = self.onEnterIdle
-		self.curFsmFunc[1] = self.onExecIdle
-		self.curFsmFunc[2] = self.onExitIdle
-	case FSM_Fapai:
-		self.curFsmFunc[0] = self.onEnterFaPai
-		self.curFsmFunc[1] = self.onExecFaPai
-		self.curFsmFunc[2] = self.onExitFaPai
-	case FSM_Bipai:
-		self.curFsmFunc[0] = self.onEnterBiPai
-		self.curFsmFunc[1] = self.onExecBiPai
-		self.curFsmFunc[2] = self.onExitBiPai
-	case FSM_Result:
-		self.curFsmFunc[0] = self.onEnterResult
-		self.curFsmFunc[1] = self.onExecResult
-		self.curFsmFunc[2] = self.onExitResult
-	default:
-
+func (self *Room) canJoinRoom(agent *agent.Agent) int {
+	if self.playerLen+self.visiterLen >= MAX_ROOM_RENSHU {
+		return Err_RoomFull
 	}
-}
-
-func (self *Room) canJoinRoom(player *agent.Agent) int {
 	return 0
 }
 
-func (self *Room) joinRoom(player *agent.Agent) {
+func (self *Room) joinRoom(agent *agent.Agent) {
+	player := new(Player)
+	player.agent = agent
+	player.state = State_Idle
+	player.seat = self.allocSeat()
+	self.addPlayer(player)
 
+	self.syncGame(player)
+}
+
+func (self *Room) allocSeat() int {
+	for i := 0; i < MAX_SEAT; i++ {
+		if self.agents[i] == nil {
+			return i
+		}
+	}
+	return -1
+}
+
+func (self *Room) addPlayer(player *Player) {
+	if player.seat < 0 || player.seat >= MAX_ROOM_RENSHU {
+		log.Warningf("niuniu room addPlayer error %d", player.seat)
+		return
+	}
+
+	self.agents[player.agent.ClientId] = player
+	self.visiters[player.seat] = player
+
+	self.agentLen += 1
+	self.visiterLen += 1
+
+	req := &msg.R_C_JoinRoom{}
+	req.RoomId = self.id
+	req.Seat = player.seat
+	req.State = int(player.state)
+
+	loumiao.SendClient(player.agent.ClientId, req)
+}
+
+func (self *Room) delPlayer(id int) {
+	if id < 0 || id >= MAX_SEAT {
+		log.Warningf("niuniu room delPlayer error %d", id)
+		return
+	}
+	delete(self.agents, id)
+	self.agentLen -= 1
+	if self.visiters[id] != nil {
+		delete(self.visiters, id)
+		self.visiterLen -= 1
+	} else {
+		delete(self.players, id)
+		self.playerLen -= 1
+	}
+}
+
+func (self *Room) syncGame(target *Player) {
+	self.syncTable(target)
+	self.syncPlayer(target)
+}
+
+func (self *Room) syncTable(target *Player) {
+	req := &msg.NN_RC_TableInfo{}
+	req.State = int(self.curState)
+	req.LeftTime = int(self.fsmTime)
+
+	loumiao.SendClient(target.agent.ClientId, req)
+}
+
+func (self *Room) syncPlayer(target *Player) {
+	req := &msg.R_C_Sync_Players{}
+	req.Players = []*msg.SyncPlayers{}
+
+	for _, player := range self.agents {
+		p := &msg.SyncPlayers{}
+		p.Gold = player.agent.Gold
+		p.HeadIconUrl = player.agent.HeadIconUrl
+		p.ID = player.agent.ID
+		p.IpAddr = player.agent.IpAddr
+		p.NickName = player.agent.NickName
+		p.Seat = player.seat
+		p.Sex = player.agent.Sex
+		p.State = int(player.state)
+
+		req.Players = append(req.Players, p)
+	}
+
+	loumiao.SendClient(target.agent.ClientId, req)
+}
+
+func (self *Room) sitDown(clientId int) {
+	agent := self.agents[clientId]
+
+	delete(self.visiters, agent.seat)
+	self.visiterLen--
+	for i := 0; i < MAX_SEAT; i++ {
+		if self.players[i] == nil {
+			agent.seat = i
+			self.players[i] = agent
+			self.playerLen++
+		}
+
+	}
 }

@@ -39,7 +39,7 @@ func handlerLogin(igo gorpc.IGoRoutine, clientid int, data interface{}) interfac
 	resp.ActiveFlag = user.ActiveFlag
 	resp.NickName = user.NickName
 
-	loumiao.SendClient(igo, clientid, resp)
+	loumiao.SendClient(clientid, resp)
 
 	return nil
 }
@@ -54,13 +54,11 @@ func handlerJoinRoom(igo gorpc.IGoRoutine, clientid int, data interface{}) inter
 	server := gorpc.GetGoRoutineMgr().GetRoutine(req.Service)
 
 	err := 0
-	for true {
+	for {
 		if server == nil {
 			err = define.Err_Room_NoExist
 			break
 		}
-		m := gorpc.M{"user": *player, "roomid": req.RoomId}
-		igo.Call(req.Service, "joinRoom", m)
 
 		break
 	}
@@ -69,7 +67,11 @@ func handlerJoinRoom(igo gorpc.IGoRoutine, clientid int, data interface{}) inter
 	resp.RoomId = req.RoomId
 	resp.ErrCode = err
 
-	loumiao.SendClient(igo, clientid, resp)
+	loumiao.SendClient(clientid, resp)
+
+	m := gorpc.M{"user": *player, "roomid": req.RoomId}
+	igo.Call(req.Service, "joinRoom", m)
 
 	return nil
+
 }

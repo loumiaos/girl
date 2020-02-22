@@ -66,6 +66,9 @@ func register() {
 	hanlders["A_C_Login"] = onLoginAccount
 	hanlders["S_C_Login"] = onLoginPlayer
 	hanlders["S_C_JoinRoom"] = onJoinRoom
+
+	hanlders["R_C_JoinRoom"] = onRCJoinRoom
+	hanlders["R_C_Sync_Players"] = onRCSync_Players
 }
 
 func init() {
@@ -114,4 +117,14 @@ func onJoinRoom(robot *Robot, data interface{}) {
 	resp := data.(*msg.S_C_JoinRoom)
 	log.Debugf("onJoinRoom: %v", resp)
 
+}
+
+func onRCJoinRoom(robot *Robot, data interface{}) {
+	resp := data.(*msg.R_C_JoinRoom)
+	log.Debugf("onRCJoinRoom: %v", resp)
+}
+
+func onRCSync_Players(robot *Robot, data interface{}) {
+	resp := data.(*msg.R_C_Sync_Players)
+	fmt.Println("onRCSync_Players: %v", resp.Players[0])
 }

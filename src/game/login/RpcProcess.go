@@ -10,15 +10,15 @@ import (
 )
 
 func handlerLogin(igo gorpc.IGoRoutine, clientid int, data interface{}) interface{} {
-	loginData := data.(*msg.C_A_Login)
+	req := data.(*msg.C_A_Login)
 
-	userId := igo.Call("DBServer", "loginAccount", loginData).(int)
+	userId := igo.Call("DBServer", "loginAccount", req).(int)
 	var resp = &msg.A_C_Login{}
 	if userId == 0 {
 		resp.ErrCode = define.Err_Login_Pass
 	} else {
 		resp.UserID = userId
 	}
-	loumiao.SendClient(igo, clientid, resp)
+	loumiao.SendClient(clientid, resp)
 	return nil
 }

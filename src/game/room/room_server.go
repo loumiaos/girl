@@ -24,7 +24,6 @@ type RoomServer struct {
 func (self *RoomServer) DoInit() {
 	log.Info("RoomServer DoInit")
 	This = self
-	//loumiao.RegisterNetHandler(self, "C_A_Login", handlerLogin)
 
 	self.Rooms = make(map[int]string)
 }
