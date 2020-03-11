@@ -20,7 +20,7 @@ func handlerHeartBeat(igo gorpc.IGoRoutine, clientid int, data interface{}) inte
 }
 
 func handlerLogin(igo gorpc.IGoRoutine, clientid int, data interface{}) interface{} {
-	req := data.(msg.C_S_Login)
+	req := data.(*msg.C_S_Login)
 
 	user := agent.GetAgentMgr().GetAgent(int(req.UserID))
 	if user == nil {
