@@ -58,8 +58,8 @@ func loginAccount(igo gorpc.IGoRoutine, data interface{}) interface{} {
 func getPlayer(igo gorpc.IGoRoutine, data interface{}) interface{} {
 	var useid = data
 
-	user := &dbmodel.User{}
-	mysqldb.DB.First(user, useid)
+	user := dbmodel.User{}
+	mysqldb.DB.First(&user, useid)
 
 	return user
 }

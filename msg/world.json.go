@@ -1,5 +1,14 @@
 package msg
 
+type C_S_HeartBeat {
+	
+}
+
+type S_C_HeartBeat {
+	
+}
+
+
 type C_S_Login struct {
 	UserID int
 }

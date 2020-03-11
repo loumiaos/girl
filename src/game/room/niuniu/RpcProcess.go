@@ -5,17 +5,14 @@ import (
 	"game/world/agent"
 
 	//"unsafe"
-
-	"github.com/snowyyj001/loumiao/log"
-
 	"github.com/snowyyj001/loumiao/gorpc"
 )
 
 func (self *GameServer) handlerJoinRoom(igo gorpc.IGoRoutine, data interface{}) interface{} {
 	m := data.(gorpc.M)
 
-	player := gorpc.SimpleGK(m, "user").(agent.Agent)
-	roomid := gorpc.SimpleGK(m, "roomid").(int)
+	player := m.Data.(agent.Agent)
+	roomid := m.Id
 
 	err := 0
 	if self.Rooms[roomid] != nil {
@@ -26,7 +23,7 @@ func (self *GameServer) handlerJoinRoom(igo gorpc.IGoRoutine, data interface{}) 
 
 	if err == 0 {
 		self.Rooms[roomid].joinRoom(&player)
-		log.Debugf("玩家%d加入房间%d", player.ID, roomid)
+		//log.Debugf("玩家%d加入房间%d", player.ID, roomid)
 		self.Players[player.ClientId] = self.Rooms[roomid]
 	}
 	return err

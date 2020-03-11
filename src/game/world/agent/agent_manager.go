@@ -1,8 +1,7 @@
 package agent
 
 import (
-	"log"
-	"sync"
+	"github.com/snowyyj001/loumiao/log"
 )
 
 type AgentMgr struct {
@@ -13,26 +12,26 @@ type AgentMgr struct {
 
 var (
 	inst *AgentMgr
-	once sync.Once
 )
 
 func GetAgentMgr() *AgentMgr {
-	once.Do(func() {
+	if inst == nil {
 		inst = &AgentMgr{}
 		inst.agents = make(map[int]*Agent)
 		inst.acc_id_Map = make(map[string]int)
 		inst.sid_id_Map = make(map[int]int)
-	})
+	}
+
 	return inst
 }
 
 func (self *AgentMgr) AddAgent(agent *Agent) {
 	if self.agents[agent.ID] != nil {
-		log.Fatalf("AgentMgr.AddAgent error,[%d] has already added", agent.ID)
+		log.Errorf("AgentMgr.AddAgent error,[%d] has already added", agent.ID)
 		return
 	}
 	if agent.ID <= 0 || agent.ClientId <= 0 || agent.Account == "" {
-		log.Fatalf("AgentMgr.AddAgent error,[%d][%s][%s] not leagl", agent.ID, agent.ClientId, agent.Account)
+		log.Errorf("AgentMgr.AddAgent error,[%d][%s][%s] not leagl", agent.ID, agent.ClientId, agent.Account)
 		return
 	}
 	self.agents[agent.ID] = agent

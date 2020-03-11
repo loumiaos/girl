@@ -12,14 +12,21 @@ import (
 	"github.com/snowyyj001/loumiao/gorpc"
 )
 
+func handlerHeartBeat(igo gorpc.IGoRoutine, clientid int, data interface{}) interface{} {
+	resp := &msg.S_C_HeartBeat{}
+	loumiao.SendClient(clientid, resp)
+
+	return nil
+}
+
 func handlerLogin(igo gorpc.IGoRoutine, clientid int, data interface{}) interface{} {
-	req := data.(*msg.C_S_Login)
+	req := data.(msg.C_S_Login)
 
 	user := agent.GetAgentMgr().GetAgent(int(req.UserID))
 	if user == nil {
-		userData := igo.Call("DBServer", "getPlayer", req.UserID).(*dbmodel.User)
+		userData := igo.Call("DBServer", "getPlayer", req.UserID).(dbmodel.User)
 		user = &agent.Agent{
-			User:     *userData,
+			User:     userData,
 			ClientId: clientid,
 		}
 		agent.GetAgentMgr().AddAgent(user)
@@ -69,7 +76,7 @@ func handlerJoinRoom(igo gorpc.IGoRoutine, clientid int, data interface{}) inter
 
 	loumiao.SendClient(clientid, resp)
 
-	m := gorpc.M{"user": *player, "roomid": req.RoomId}
+	m := gorpc.M{Data: *player, Id: req.RoomId}
 	igo.Call(req.Service, "joinRoom", m)
 
 	return nil

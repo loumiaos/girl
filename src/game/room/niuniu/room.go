@@ -110,16 +110,17 @@ func (self *Room) syncTable(target *Player) {
 	req := &msg.NN_RC_TableInfo{}
 	req.State = int(self.curState)
 	req.LeftTime = int(self.fsmTime)
+	req.BaseScore = 10
 
 	loumiao.SendClient(target.agent.ClientId, req)
 }
 
 func (self *Room) syncPlayer(target *Player) {
-	req := &msg.R_C_Sync_Players{}
-	req.Players = []*msg.SyncPlayers{}
+	req := &msg.R_C_SyncPlayers{}
+	req.Players = []msg.SyncPlayers{}
 
 	for _, player := range self.agents {
-		p := &msg.SyncPlayers{}
+		p := msg.SyncPlayers{}
 		p.Gold = player.agent.Gold
 		p.HeadIconUrl = player.agent.HeadIconUrl
 		p.ID = player.agent.ID

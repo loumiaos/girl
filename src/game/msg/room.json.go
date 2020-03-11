@@ -18,8 +18,8 @@ type SyncPlayers struct {
 	State int
 }
 
-type R_C_Sync_Players struct {
-	Players []*SyncPlayers
+type R_C_SyncPlayers struct {
+	Players []SyncPlayers
 }
 
 type C_R_SitDown struct {
