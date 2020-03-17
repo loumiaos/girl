@@ -12,6 +12,15 @@ import (
 	"github.com/snowyyj001/loumiao/gorpc"
 )
 
+func handlerOnDisConnect(igo gorpc.IGoRoutine, clientid int, data interface{}) interface{} {
+	user := agent.GetAgentMgr().GetAgentByServerId(clientid)
+	if user != nil {
+		user.OnLoginOut()
+		agent.GetAgentMgr().RemoveAgent(user.ID)
+	}
+	return nil
+}
+
 func handlerHeartBeat(igo gorpc.IGoRoutine, clientid int, data interface{}) interface{} {
 	resp := &msg.S_C_HeartBeat{}
 	loumiao.SendClient(clientid, resp)
@@ -66,19 +75,21 @@ func handlerJoinRoom(igo gorpc.IGoRoutine, clientid int, data interface{}) inter
 			err = define.Err_Room_NoExist
 			break
 		}
-
-		break
+		break //这个break容易忘记写，会导致死循环，但goto使用不方便，跪求官方给出do while语法糖
+	}
+	if err != 0 {
+		resp := &msg.S_C_JoinRoom{}
+		resp.RoomId = req.RoomId
+		resp.ErrCode = err
+		loumiao.SendClient(clientid, resp)
+		return nil
 	}
 
-	resp := &msg.S_C_JoinRoom{}
-	resp.RoomId = req.RoomId
-	resp.ErrCode = err
-
-	loumiao.SendClient(clientid, resp)
-
 	m := gorpc.M{Data: *player, Id: req.RoomId}
-	igo.Call(req.Service, "joinRoom", m)
+	err = igo.Call(req.Service, "joinRoom", m).(int)
+	if err == 0 {
+		player.GameArea = req.Service
+	}
 
 	return nil
-
 }

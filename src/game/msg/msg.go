@@ -17,4 +17,5 @@ func init() {
 
 	message.RegisterPacket(&R_C_JoinRoom{})
 	message.RegisterPacket(&R_C_SyncPlayers{})
+	message.RegisterPacket(&R_C_PlayerOffline{})
 }

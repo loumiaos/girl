@@ -39,6 +39,26 @@ func (self *Room) doStart(roomid int) {
 	self.curFsmFunc[0](0)
 }
 
+func (self *Room) SendClients(msg interface{}) {
+	ids := make([]int, self.agentLen)
+	i := 0
+	for id, _ := range self.agents {
+		ids[i] = id
+		i++
+	}
+	loumiao.SendMulClient(ids, msg)
+}
+
+func (self *Room) getAllPlayers() []int {
+	ids := make([]int, self.agentLen)
+	i := 0
+	for id, _ := range self.agents {
+		ids[i] = id
+		i++
+	}
+	return ids
+}
+
 func (self *Room) canJoinRoom(agent *agent.Agent) int {
 	if self.playerLen+self.visiterLen >= MAX_ROOM_RENSHU {
 		return Err_RoomFull
@@ -56,13 +76,32 @@ func (self *Room) joinRoom(agent *agent.Agent) {
 	self.syncGame(player)
 }
 
+func (self *Room) disConnect(userId int) {
+	player := self.getPlayer(userId)
+	if player == nil {
+		return
+	}
+	player.disConnect()
+
+	if player.state == State_Idle {
+		self.delPlayer(userId)
+	} else {
+		req := &msg.R_C_PlayerOffline{}
+		self.SendClients(req)
+	}
+}
+
 func (self *Room) allocSeat() int {
 	for i := 0; i < MAX_SEAT; i++ {
-		if self.agents[i] == nil {
+		if self.players[i] == nil {
 			return i
 		}
 	}
 	return -1
+}
+
+func (self *Room) getPlayer(userId int) *Player {
+	return self.agents[userId]
 }
 
 func (self *Room) addPlayer(player *Player) {
@@ -71,7 +110,7 @@ func (self *Room) addPlayer(player *Player) {
 		return
 	}
 
-	self.agents[player.agent.ClientId] = player
+	self.agents[player.agent.ID] = player
 	self.visiters[player.seat] = player
 
 	self.agentLen += 1
@@ -136,8 +175,8 @@ func (self *Room) syncPlayer(target *Player) {
 	loumiao.SendClient(target.agent.ClientId, req)
 }
 
-func (self *Room) sitDown(clientId int) {
-	agent := self.agents[clientId]
+func (self *Room) sitDown(userId int) {
+	agent := self.agents[userId]
 
 	delete(self.visiters, agent.seat)
 	self.visiterLen--

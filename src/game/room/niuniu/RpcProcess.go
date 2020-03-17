@@ -8,6 +8,14 @@ import (
 	"github.com/snowyyj001/loumiao/gorpc"
 )
 
+func (self *GameServer) handlerLogOut(igo gorpc.IGoRoutine, data interface{}) interface{} {
+	userId := data.(int)
+	room := self.GetRoomByUserId(userId)
+	room.disConnect(userId)
+
+	return nil
+}
+
 func (self *GameServer) handlerJoinRoom(igo gorpc.IGoRoutine, data interface{}) interface{} {
 	m := data.(gorpc.M)
 
@@ -24,14 +32,16 @@ func (self *GameServer) handlerJoinRoom(igo gorpc.IGoRoutine, data interface{}) 
 	if err == 0 {
 		self.Rooms[roomid].joinRoom(&player)
 		//log.Debugf("玩家%d加入房间%d", player.ID, roomid)
-		self.Players[player.ClientId] = self.Rooms[roomid]
+		self.Players[player.ID] = roomid
+		self.Agents[player.ClientId] = player.ID
 	}
 	return err
 }
 
 func handlerSitDown(igo gorpc.IGoRoutine, clientid int, data interface{}) interface{} {
-	room := This.Players[clientid]
-	room.sitDown(clientid)
-
+	userId, room := This.GetRoomByClientId(clientid)
+	if room != nil {
+		room.sitDown(userId)
+	}
 	return nil
 }

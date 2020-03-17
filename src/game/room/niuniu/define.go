@@ -3,7 +3,7 @@ package niuniu
 const (
 	MAX_ROOM_RENSHU = 50 //房间最大人数
 	MAX_SEAT        = 13 //座位数
-	POKER_NUMBER    = 52 //扑克数量
+	POKER_NUMBER    = 54 //扑克数量
 	MIN_GAMER       = 2  //最小玩家数量
 )
 

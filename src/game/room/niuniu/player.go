@@ -9,3 +9,7 @@ type Player struct {
 	seat  int
 	state RoomState
 }
+
+func (self *Player) disConnect() {
+
+}

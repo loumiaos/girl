@@ -24,3 +24,7 @@ type R_C_SyncPlayers struct {
 
 type C_R_SitDown struct {
 }
+
+type R_C_PlayerOffline struct {
+	UserId int
+}

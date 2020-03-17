@@ -22,24 +22,28 @@ type GameServer struct {
 	GameRule string
 	RoomNum  int
 	Rooms    map[int]*Room
-	Players  map[int]*Room
+	Players  map[int]int
+	Agents   map[int]int
 }
 
 func (self *GameServer) DoInit() {
 	log.Infof("%s DoInit", self.Name)
 	This = self
+
 	loumiao.RegisterNetHandler(self, "C_R_SitDown", handlerSitDown)
 
 }
 
 func (self *GameServer) DoRegsiter() {
 	self.Register("joinRoom", self.handlerJoinRoom)
+	self.Register("disconnect", self.handlerLogOut)
 }
 
 func (self *GameServer) DoStart() {
 	log.Infof("%s DoStart", self.Name)
 
-	self.Players = make(map[int]*Room)
+	self.Agents = make(map[int]int)
+	self.Players = make(map[int]int)
 	self.Rooms = make(map[int]*Room)
 	for i := 0; i < self.RoomNum; i++ {
 		roomid := GetRoomId(self.GameId, i+1)
@@ -52,6 +56,21 @@ func (self *GameServer) DoStart() {
 
 func (self *GameServer) DoDestory() {
 	log.Info("niuniu GameServer destory")
+}
+
+func (self *GameServer) GetRoomByClientId(clientId int) (int, *Room) {
+	userId := self.Agents[clientId]
+	roomId := self.Players[userId]
+	return userId, This.Rooms[roomId]
+}
+
+func (self *GameServer) GetRoomByUserId(userId int) *Room {
+	roomId := self.Players[userId]
+	return This.Rooms[roomId]
+}
+
+func (self *GameServer) GetRoomByRoomId(roomId int) *Room {
+	return This.Rooms[roomId]
 }
 
 func (self *GameServer) Update(igo gorpc.IGoRoutine, data interface{}) interface{} {
