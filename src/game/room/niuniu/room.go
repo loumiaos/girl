@@ -86,8 +86,8 @@ func (self *Room) disConnect(userId int) {
 	if player.state == State_Idle {
 		self.delPlayer(userId)
 	} else {
-		req := &msg.R_C_PlayerOffline{}
-		self.SendClients(req)
+		//req := &msg.R_C_PlayerOffline{}
+		//self.SendClients(req)
 	}
 }
 

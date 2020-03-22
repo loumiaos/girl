@@ -6,6 +6,7 @@ import (
 
 	"game/db"
 	"game/dbmodel"
+	"game/gate"
 	"game/login"
 	"game/world"
 
@@ -13,7 +14,6 @@ import (
 	"github.com/snowyyj001/loumiao/dbbase/mysqldb"
 
 	//"github.com/snowyyj001/loumiao/dbbase/redisdb"
-	"github.com/snowyyj001/loumiao/gate"
 	"github.com/snowyyj001/loumiao/log"
 
 	lconf "github.com/snowyyj001/loumiao/config"
@@ -22,6 +22,9 @@ import (
 func init() {
 	lconf.NET_PROTOCOL = config.NET_PROTOCOL
 	lconf.NET_WEBSOCKET = config.NET_WEBSOCKET
+	lconf.NET_RPC_IP = config.NET_RPC_IP
+	lconf.NET_RPC_PORT = config.NET_RPC_PORT
+	lconf.NET_BE_CHILD = config.NET_BE_CHILD
 
 	lconf.MYSQL_URI = config.MYSQL_URI
 	lconf.MYSQL_DBNAME = config.MYSQL_DBNAME
@@ -31,12 +34,15 @@ func init() {
 
 func main() {
 	log.Info("server run!")
-
+	//db connect
 	mysqldb.Dial(dbmodel.Models)
 	//redisdb.DialDefault()
 
+	//start watch dog
+	gate.StartGate()
+
+	//service start
 	loumiao.Prepare(new(db.DBServer), "DBServer", true)
-	loumiao.Prepare(new(gate.GateServer), "GateServer", false)
 	loumiao.Prepare(new(login.LoginServer), "LoginServer", false)
 	loumiao.Prepare(new(world.WorldServer), "WorldServer", false)
 	loumiao.Prepare(new(room.RoomServer), "RoomServer", false)

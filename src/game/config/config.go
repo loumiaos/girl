@@ -14,8 +14,11 @@ const (
 
 //net
 const (
-	NET_PROTOCOL  = "JSON" //OR"PROTOBUF" 使用JSON协议
-	NET_WEBSOCKET = true   //使用websocket
+	NET_PROTOCOL  = "JSON"      //OR"PROTOBUF" 使用JSON协议
+	NET_WEBSOCKET = true        //使用websocket
+	NET_RPC_IP    = "127.0.0.1" //RPC监听地址
+	NET_RPC_PORT  = 5678        //RPC监听端口
+	NET_BE_CHILD  = true        //分布式结构
 )
 
 //db

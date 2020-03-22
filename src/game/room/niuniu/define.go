@@ -11,7 +11,6 @@ type RoomState int
 
 const (
 	State_Idle RoomState = iota
-	State_FaPai
 	State_Ready
 	State_Gameing
 )

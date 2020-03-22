@@ -22,7 +22,7 @@ func (self *WorldServer) DoInit() {
 	log.Info("WorldServer DoInit")
 	This = self
 
-	loumiao.RegisterNetHandler(self, "DISCONNECT", handlerOnDisConnect)
+	loumiao.RegisterNetHandler(self, "DISCONNECT", handlerDisConnect)
 	loumiao.RegisterNetHandler(self, "C_S_Login", handlerLogin)
 	loumiao.RegisterNetHandler(self, "C_S_HeartBeat", handlerHeartBeat)
 	loumiao.RegisterNetHandler(self, "C_S_Login", handlerLogin)

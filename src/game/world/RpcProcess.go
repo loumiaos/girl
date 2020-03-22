@@ -12,7 +12,7 @@ import (
 	"github.com/snowyyj001/loumiao/gorpc"
 )
 
-func handlerOnDisConnect(igo gorpc.IGoRoutine, clientid int, data interface{}) interface{} {
+func handlerDisConnect(igo gorpc.IGoRoutine, clientid int, data interface{}) interface{} {
 	user := agent.GetAgentMgr().GetAgentByServerId(clientid)
 	if user != nil {
 		user.OnLoginOut()
