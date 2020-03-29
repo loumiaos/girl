@@ -1,19 +1,17 @@
 package main
 
 import (
-	"game/config"
-	"game/room"
-
-	"game/db"
-	"game/dbmodel"
-	"game/gate"
-	"game/world"
+	"dbmodel"
+	"login/config"
+	"login/db"
+	"login/gate"
+	"login/login"
 
 	"github.com/snowyyj001/loumiao"
 	"github.com/snowyyj001/loumiao/dbbase/mysqldb"
+	"github.com/snowyyj001/loumiao/log"
 
 	//"github.com/snowyyj001/loumiao/dbbase/redisdb"
-	"github.com/snowyyj001/loumiao/log"
 
 	lconf "github.com/snowyyj001/loumiao/config"
 )
@@ -26,18 +24,16 @@ func init() {
 }
 
 func main() {
-	log.Info("server run!")
+	log.Info("login server run!")
 	//db connect
 	mysqldb.Dial(dbmodel.Models)
 	//redisdb.DialDefault()
 
-	//start watch dog
 	gate.StartGate()
 
 	//service start
 	loumiao.Prepare(new(db.DBServer), "DBServer", true)
-	loumiao.Prepare(new(world.WorldServer), "WorldServer", false)
-	loumiao.Prepare(new(room.RoomServer), "RoomServer", false)
+	loumiao.Prepare(new(login.LoginServer), "LoginServer", false)
 
 	loumiao.Run()
 }

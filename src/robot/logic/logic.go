@@ -49,7 +49,7 @@ func PacketFunc(socketid int, buff []byte, nlen int) bool {
 func (self *Robot) Login() {
 	self.client = new(network.WebClient)
 	self.client.SetClientId(self.m_ClientId)
-	self.client.Init("127.0.0.1", 6789)
+	self.client.Init("127.0.0.1", 4567)
 	self.client.SetConnectType(network.CLIENT_CONNECT)
 	self.client.BindPacketFunc(PacketFunc)
 	self.client.Start()

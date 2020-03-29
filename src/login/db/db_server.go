@@ -17,8 +17,7 @@ func (self *DBServer) DoInit() {
 }
 
 func (self *DBServer) DoRegsiter() {
-	self.Register("getPlayer", getPlayer)
-	self.Register("getGameCfg", getGameCfg)
+	self.Register("loginAccount", loginAccount)
 }
 
 func (self *DBServer) DoDestory() {

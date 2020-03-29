@@ -11,6 +11,7 @@ type C_A_Login struct {
 }
 
 type A_C_Login struct {
-	ErrCode int
-	UserID  int
+	ErrCode  int
+	UserID   int
+	GateAddr string
 }

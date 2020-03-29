@@ -1,8 +1,10 @@
 package config
 
-//sys
+//player
 const (
-	OFFLINE_TIME int64 = 5 * 60 * 1000 //离线五分钟则删除内存
+	PLAYER_GOLD  int64 = 1000
+	PLAYER_COIN  int64 = 0
+	PLAYER_MONEY int64 = 0
 )
 
 //db

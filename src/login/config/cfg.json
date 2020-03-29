@@ -1,0 +1,10 @@
+{
+	"selfnet": {
+		"protocol": "JSON",
+		"ip": "127.0.0.1",
+		"port": 4567,
+		"websocket": 1,
+		"bechild": 2
+	}
+
+}
