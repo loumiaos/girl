@@ -2,7 +2,8 @@ package login
 
 import (
 	"login/define"
-	"login/msg"
+	"login/gate"
+	"msg"
 
 	"github.com/snowyyj001/loumiao/gorpc"
 
@@ -18,6 +19,7 @@ func handlerLogin(igo gorpc.IGoRoutine, clientid int, data interface{}) interfac
 		resp.ErrCode = define.Err_Login_Pass
 	} else {
 		resp.UserID = userId
+		resp.GateAddr = gate.GetPerfactGate()
 	}
 	loumiao.SendClient(clientid, resp)
 	return nil

@@ -15,3 +15,9 @@ type A_C_Login struct {
 	UserID   int
 	GateAddr string
 }
+
+type G_L_GateInfo struct {
+	Ip           string
+	Port         int
+	OnLineNumber int
+}

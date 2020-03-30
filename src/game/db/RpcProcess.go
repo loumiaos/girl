@@ -1,7 +1,7 @@
 package db
 
 import (
-	"game/dbmodel"
+	"dbmodel"
 
 	"github.com/snowyyj001/loumiao/dbbase/mysqldb"
 	"github.com/snowyyj001/loumiao/gorpc"

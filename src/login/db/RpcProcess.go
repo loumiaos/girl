@@ -3,7 +3,7 @@ package db
 import (
 	"dbmodel"
 	"login/config"
-	"login/msg"
+	"msg"
 
 	"github.com/snowyyj001/loumiao/dbbase/mysqldb"
 	"github.com/snowyyj001/loumiao/gorpc"

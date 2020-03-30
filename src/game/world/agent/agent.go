@@ -1,7 +1,7 @@
 package agent
 
 import (
-	"game/dbmodel"
+	"dbmodel"
 
 	"github.com/snowyyj001/loumiao/util"
 )

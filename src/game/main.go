@@ -4,8 +4,8 @@ import (
 	"game/config"
 	"game/room"
 
+	"dbmodel"
 	"game/db"
-	"game/dbmodel"
 	"game/gate"
 	"game/world"
 

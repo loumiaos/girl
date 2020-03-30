@@ -2,7 +2,7 @@
 package room
 
 import (
-	"game/dbmodel"
+	"dbmodel"
 
 	"game/room/niuniu"
 

@@ -1,7 +1,7 @@
 package world
 
 import (
-	"game/dbmodel"
+	"dbmodel"
 	"game/define"
 	"game/msg"
 	"game/world/agent"
