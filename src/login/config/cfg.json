@@ -1,5 +1,6 @@
 {
 	"selfnet": {
+		"id": 2,
 		"protocol": "JSON",
 		"ip": "127.0.0.1",
 		"port": 4567,

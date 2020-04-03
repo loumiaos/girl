@@ -19,6 +19,8 @@ var (
 type Robot struct {
 	client     *network.WebClient //如果使用socket，请使用ClientSocket
 	m_ClientId int
+	logintype  int
+	userId     int
 }
 
 func PacketFunc(socketid int, buff []byte, nlen int) bool {
@@ -47,6 +49,7 @@ func PacketFunc(socketid int, buff []byte, nlen int) bool {
 }
 
 func (self *Robot) Login() {
+	self.logintype = 1
 	self.client = new(network.WebClient)
 	self.client.SetClientId(self.m_ClientId)
 	self.client.Init("127.0.0.1", 4567)
@@ -54,6 +57,17 @@ func (self *Robot) Login() {
 	self.client.BindPacketFunc(PacketFunc)
 	self.client.Start()
 }
+
+func (self *Robot) LoginServer() {
+	self.logintype = 2
+	self.client = new(network.WebClient)
+	self.client.SetClientId(self.m_ClientId)
+	self.client.Init("127.0.0.1", 6789)
+	self.client.SetConnectType(network.CLIENT_CONNECT)
+	self.client.BindPacketFunc(PacketFunc)
+	self.client.Start()
+}
+
 func Start() {
 	for i := 0; i < config.ROBOT_NUMBER; i++ {
 		robots[i] = &Robot{m_ClientId: i}
@@ -79,26 +93,32 @@ func init() {
 
 func onConnect(robot *Robot, data interface{}) {
 	log.Debugf("onConnect: %d", robot.m_ClientId)
+	if robot.logintype == 1 {
+		login := new(msg.C_A_Login)
+		login.AccountName = fmt.Sprintf("%d:账户", robot.m_ClientId)
+		login.Password = "123456"
+		login.Channel = 1
+		login.LoginType = 1
+		login.Sex = 0
+		login.NickName = fmt.Sprintf("%d:昵称", robot.m_ClientId)
+		login.HeadIcon = "www.baidu.com"
+		log.Debugf("发送登陆消息: %v", login)
+		robot.client.SendMsg("C_A_Login", login)
+	} else {
+		login := new(msg.C_S_Login)
+		login.UserID = robot.userId
+		robot.client.SendMsg("C_S_Login", login)
+		log.Debugf("1.发送登陆消息: %v", login)
+	}
 
-	login := new(msg.C_A_Login)
-	login.AccountName = fmt.Sprintf("%d:账户", robot.m_ClientId)
-	login.Password = "123456"
-	login.Channel = 1
-	login.LoginType = 1
-	login.Sex = 0
-	login.NickName = fmt.Sprintf("%d:昵称", robot.m_ClientId)
-	login.HeadIcon = "www.baidu.com"
-	log.Debugf("发送登陆消息: %v", login)
-	robot.client.SendMsg("C_A_Login", login)
 }
 
 func onLoginAccount(robot *Robot, data interface{}) {
 	resp := data.(*msg.A_C_Login)
 	log.Debugf("onLoginAccount: %v", resp)
-
-	login := new(msg.C_S_Login)
-	login.UserID = resp.UserID
-	robot.client.SendMsg("C_S_Login", login)
+	robot.client.Stop()
+	robot.userId = resp.UserID
+	robot.LoginServer()
 }
 
 func onLoginPlayer(robot *Robot, data interface{}) {

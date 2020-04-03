@@ -13,6 +13,7 @@
 		}
 	],
 	"selfnet": {
+		"id": 3,
 		"protocol": "JSON",
 		"ip": "127.0.0.1",
 		"port": 6789,

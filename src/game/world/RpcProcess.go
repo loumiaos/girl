@@ -6,6 +6,8 @@ import (
 	"game/msg"
 	"game/world/agent"
 
+	"fmt"
+
 	"github.com/snowyyj001/loumiao/log"
 
 	"github.com/snowyyj001/loumiao"
@@ -21,15 +23,9 @@ func handlerDisConnect(igo gorpc.IGoRoutine, clientid int, data interface{}) int
 	return nil
 }
 
-func handlerHeartBeat(igo gorpc.IGoRoutine, clientid int, data interface{}) interface{} {
-	resp := &msg.S_C_HeartBeat{}
-	loumiao.SendClient(clientid, resp)
-
-	return nil
-}
-
 func handlerLogin(igo gorpc.IGoRoutine, clientid int, data interface{}) interface{} {
 	req := data.(*msg.C_S_Login)
+	fmt.Println("handlerLogin ", req)
 
 	user := agent.GetAgentMgr().GetAgent(int(req.UserID))
 	if user == nil {

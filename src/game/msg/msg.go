@@ -5,6 +5,7 @@ import (
 )
 
 func init() {
+
 	message.RegisterPacket(&C_S_HeartBeat{})
 	message.RegisterPacket(&S_C_HeartBeat{})
 	message.RegisterPacket(&C_S_Login{})

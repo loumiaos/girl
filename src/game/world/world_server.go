@@ -24,8 +24,6 @@ func (self *WorldServer) DoInit() {
 
 	loumiao.RegisterNetHandler(self, "DISCONNECT", handlerDisConnect)
 	loumiao.RegisterNetHandler(self, "C_S_Login", handlerLogin)
-	loumiao.RegisterNetHandler(self, "C_S_HeartBeat", handlerHeartBeat)
-	loumiao.RegisterNetHandler(self, "C_S_Login", handlerLogin)
 	loumiao.RegisterNetHandler(self, "C_S_JoinRoom", handlerJoinRoom)
 }
 
