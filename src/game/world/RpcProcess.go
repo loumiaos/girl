@@ -6,8 +6,6 @@ import (
 	"game/msg"
 	"game/world/agent"
 
-	"fmt"
-
 	"github.com/snowyyj001/loumiao/log"
 
 	"github.com/snowyyj001/loumiao"
@@ -15,6 +13,7 @@ import (
 )
 
 func handlerDisConnect(igo gorpc.IGoRoutine, clientid int, data interface{}) interface{} {
+	log.Debugf("handlerDisConnect %d %v", clientid, data)
 	user := agent.GetAgentMgr().GetAgentByServerId(clientid)
 	if user != nil {
 		user.OnLoginOut()
@@ -25,8 +24,6 @@ func handlerDisConnect(igo gorpc.IGoRoutine, clientid int, data interface{}) int
 
 func handlerLogin(igo gorpc.IGoRoutine, clientid int, data interface{}) interface{} {
 	req := data.(*msg.C_S_Login)
-	fmt.Println("handlerLogin ", req)
-
 	user := agent.GetAgentMgr().GetAgent(int(req.UserID))
 	if user == nil {
 		userData := igo.Call("DBServer", "getPlayer", req.UserID).(dbmodel.User)

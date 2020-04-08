@@ -1,5 +1,13 @@
 package niuniu
 
+import (
+	"fmt"
+	"game/msg"
+
+	"github.com/snowyyj001/loumiao"
+	"github.com/snowyyj001/loumiao/util"
+)
+
 func (self *Room) SetState(state FSMState) {
 	self.nextState = state
 }
@@ -63,7 +71,26 @@ func (self *Room) onExitIdle(dt int64) {
 }
 
 func (self *Room) onEnterFaPai(dt int64) {
+	fmt.Println("onEnterFaPai")
 	self.fsmTime = Time_FaPai
+	cards := CARD_POKERS[:]
+	g_GameLogic.shuffle(cards)
+
+	var j int = 0
+	for _, player := range self.players {
+		player.handCards = make([]int, HANDCARD_NUM)
+		player.sortCards = make([]int, HANDCARD_NUM)
+		for i := 0; i < 4; i++ {
+			player.handCards[i] = cards[j]
+			player.sortCards[i] = player.handCards[i]
+			j++
+		}
+		g_GameLogic.sortByValue(player.sortCards, true)
+		req := &msg.NN_RC_FaPai{}
+		req.Cards = make([]int, HANDCARD_NUM)
+		util.CopyArray(req.Cards, player.handCards, 4)
+		loumiao.SendClient(player.agent.ClientId, req)
+	}
 }
 
 func (self *Room) onExecFaPai(dt int64) {

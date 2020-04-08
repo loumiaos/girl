@@ -31,7 +31,7 @@ func (self *GameServer) DoInit() {
 	This = self
 
 	loumiao.RegisterNetHandler(self, "C_R_SitDown", handlerSitDown)
-
+	loumiao.RegisterNetHandler(self, "C_R_Ready", handlerPlayerReady)
 }
 
 func (self *GameServer) DoRegsiter() {
@@ -51,7 +51,7 @@ func (self *GameServer) DoStart() {
 		self.Rooms[roomid].doStart(roomid)
 	}
 
-	self.RunTicker(1000, self.Update)
+	self.RunTimer(1000, self.Update)
 }
 
 func (self *GameServer) DoDestory() {

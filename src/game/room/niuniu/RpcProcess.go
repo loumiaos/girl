@@ -1,6 +1,7 @@
 package niuniu
 
 import (
+	"fmt"
 	"game/define"
 	"game/world/agent"
 
@@ -43,5 +44,15 @@ func handlerSitDown(igo gorpc.IGoRoutine, clientid int, data interface{}) interf
 	if room != nil {
 		room.sitDown(userId)
 	}
+	return nil
+}
+
+func handlerPlayerReady(igo gorpc.IGoRoutine, clientid int, data interface{}) interface{} {
+	fmt.Println("handlerPlayerReady", data)
+	userId, room := This.GetRoomByClientId(clientid)
+	if room == nil {
+		return nil
+	}
+	room.ready(userId)
 	return nil
 }

@@ -1,0 +1,11 @@
+{
+    "selfnet":
+    {
+    	"id": 1,
+		"type": 1,
+        "protocol":"JSON",
+        "rpcip":"127.0.0.1",
+        "rpcport":5678,
+        "websocket":1
+    }
+}

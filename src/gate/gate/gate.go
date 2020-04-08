@@ -1,7 +1,6 @@
 package gate
 
 import (
-	"gate/config"
 	"msg"
 
 	"github.com/snowyyj001/loumiao"
@@ -18,7 +17,7 @@ func StartGate() {
 }
 
 func OnServerConnected(uid int) {
-	if uid == config.LOGIN_NODE {
+	if uid != 1 {
 		ReportGateInfo(uid, 0)
 	}
 }

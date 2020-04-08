@@ -15,4 +15,7 @@ func init() {
 
 	message.RegisterPacket(&R_C_JoinRoom{})
 	message.RegisterPacket(&R_C_SyncPlayers{})
+	message.RegisterPacket(&C_R_Ready{})
+	message.RegisterPacket(&NN_RC_TableInfo{})
+	message.RegisterPacket(&NN_RC_FaPai{})
 }

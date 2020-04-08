@@ -5,6 +5,7 @@ const (
 	MAX_SEAT        = 13 //座位数
 	POKER_NUMBER    = 54 //扑克数量
 	MIN_GAMER       = 2  //最小玩家数量
+	HANDCARD_NUM    = 5  //手牌数量
 )
 
 type RoomState int

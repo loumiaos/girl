@@ -3,7 +3,7 @@ package db
 import (
 	"dbmodel"
 	"login/config"
-	"msg"
+	"login/msg"
 
 	"github.com/snowyyj001/loumiao/dbbase/mysqldb"
 	"github.com/snowyyj001/loumiao/gorpc"
@@ -11,7 +11,7 @@ import (
 )
 
 func loginAccount(igo gorpc.IGoRoutine, data interface{}) interface{} {
-	var m = data.(msg.C_A_Login)
+	var m = data.(*msg.C_A_Login)
 
 	query := struct {
 		ID        int

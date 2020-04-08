@@ -24,15 +24,13 @@ type Room struct {
 	players   map[int]*Player
 	playerLen int
 
-	visiters   map[int]*Player
-	visiterLen int
+	chairIds [MAX_SEAT]int
 }
 
 func (self *Room) doStart(roomid int) {
 	self.id = roomid
 	self.agents = make(map[int]*Player)
 	self.players = make(map[int]*Player)
-	self.visiters = make(map[int]*Player)
 	self.curState = FSM_Idle
 	self.nextState = FSM_Idle
 	self.changeState()
@@ -60,7 +58,7 @@ func (self *Room) getAllPlayers() []int {
 }
 
 func (self *Room) canJoinRoom(agent *agent.Agent) int {
-	if self.playerLen+self.visiterLen >= MAX_ROOM_RENSHU {
+	if self.playerLen >= MAX_ROOM_RENSHU {
 		return Err_RoomFull
 	}
 	return 0
@@ -72,8 +70,24 @@ func (self *Room) joinRoom(agent *agent.Agent) {
 	player.state = State_Idle
 	player.seat = self.allocSeat()
 	self.addPlayer(player)
+	//自动坐下
+	self.sitDown(player.agent.ID)
 
 	self.syncGame(player)
+
+	req := &msg.R_C_JoinRoom{}
+	req.RoomId = self.id
+	req.Seat = player.seat
+	p := &req.UserInfo
+	p.Gold = player.agent.Gold
+	p.HeadIconUrl = player.agent.HeadIconUrl
+	p.ID = player.agent.ID
+	p.IpAddr = player.agent.IpAddr
+	p.NickName = player.agent.NickName
+	p.Seat = player.seat
+	p.Sex = player.agent.Sex
+	p.State = int(player.state)
+	self.BroastMsg(req, player.agent.ID)
 }
 
 func (self *Room) disConnect(userId int) {
@@ -93,7 +107,7 @@ func (self *Room) disConnect(userId int) {
 
 func (self *Room) allocSeat() int {
 	for i := 0; i < MAX_SEAT; i++ {
-		if self.players[i] == nil {
+		if self.chairIds[i] == 0 {
 			return i
 		}
 	}
@@ -109,19 +123,9 @@ func (self *Room) addPlayer(player *Player) {
 		log.Warningf("niuniu room addPlayer error %d", player.seat)
 		return
 	}
-
+	self.chairIds[player.seat] = player.agent.ID
 	self.agents[player.agent.ID] = player
-	self.visiters[player.seat] = player
-
 	self.agentLen += 1
-	self.visiterLen += 1
-
-	req := &msg.R_C_JoinRoom{}
-	req.RoomId = self.id
-	req.Seat = player.seat
-	req.State = int(player.state)
-
-	loumiao.SendClient(player.agent.ClientId, req)
 }
 
 func (self *Room) delPlayer(id int) {
@@ -129,15 +133,24 @@ func (self *Room) delPlayer(id int) {
 		log.Warningf("niuniu room delPlayer error %d", id)
 		return
 	}
+	self.chairIds[self.agents[id].seat] = 0
 	delete(self.agents, id)
 	self.agentLen -= 1
-	if self.visiters[id] != nil {
-		delete(self.visiters, id)
-		self.visiterLen -= 1
-	} else {
+
+	if self.players[id] != nil {
 		delete(self.players, id)
 		self.playerLen -= 1
 	}
+}
+
+func (self *Room) BroastMsg(msg interface{}, exceptId int) {
+	ids := []int{}
+	for id, player := range self.agents {
+		if id != exceptId {
+			ids = append(ids, player.agent.ClientId)
+		}
+	}
+	loumiao.SendMulClient(ids, msg)
 }
 
 func (self *Room) syncGame(target *Player) {
@@ -178,14 +191,16 @@ func (self *Room) syncPlayer(target *Player) {
 func (self *Room) sitDown(userId int) {
 	agent := self.agents[userId]
 
-	delete(self.visiters, agent.seat)
-	self.visiterLen--
-	for i := 0; i < MAX_SEAT; i++ {
-		if self.players[i] == nil {
-			agent.seat = i
-			self.players[i] = agent
-			self.playerLen++
-		}
+	self.players[userId] = agent
+	self.playerLen++
+}
 
+func (self *Room) ready(userId int) {
+	player, ok := self.players[userId]
+	if !ok {
+		return
 	}
+	player.setRoomState(State_Ready)
+	req := &msg.R_C_Ready{UserId: userId}
+	self.BroastMsg(req, 0)
 }

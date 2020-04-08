@@ -13,7 +13,6 @@ var CARD_POKERS = []int{
 }
 
 const (
-	HANDCARD_NUM  = 5
 	VALUE_MASK    = 0x0f
 	COLOR_MASK    = 0xf0
 	JOKER_X_INDEX = 52
@@ -34,6 +33,8 @@ const (
 
 type GameLogic struct {
 }
+
+var g_GameLogic *GameLogic
 
 //混乱扑克
 func (self *GameLogic) shuffle(cards []int) {
@@ -172,4 +173,8 @@ func (self *GameLogic) getBaseType(cards []int) (int, []int) {
 		}
 	}
 	return TYPE_NONE, allComposes[9]
+}
+
+func init() {
+	g_GameLogic = &GameLogic{}
 }

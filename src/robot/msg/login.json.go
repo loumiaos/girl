@@ -11,33 +11,8 @@ type C_A_Login struct {
 }
 
 type A_C_Login struct {
-	ErrCode int
-	UserID  int
-}
-
-type C_S_Login struct {
-	UserID int
-}
-
-type S_C_Login struct {
-	ErrCode     int
-	UserID      int
-	Gold        int64
-	Coin        int64
-	Money       int64
-	HeadIconUrl string
-	UnderWrite  string
-	Sex         int
-	ActiveFlag  int64
-	NickName    string
-}
-
-type C_S_JoinRoom struct {
-	RoomId  int
-	Service string
-}
-
-type S_C_JoinRoom struct {
-	ErrCode int
-	RoomId  int
+	ErrCode  int
+	UserID   int
+	TokenID  int
+	GateAddr string
 }

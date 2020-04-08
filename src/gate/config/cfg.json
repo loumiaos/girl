@@ -1,23 +1,25 @@
 {
 	"net": [{
 			"id": 1,
+			"type": 1,
 			"ip": "127.0.0.1",
 			"port": 5678,
 			"Name": "world"
 		},
 		{
 			"id": 2,
+			"type": 3,
 			"ip": "127.0.0.1",
-			"port": 4567,
+			"port": 7001,
 			"Name": "login"
 		}
 	],
 	"selfnet": {
 		"id": 3,
+		"type": 2,
 		"protocol": "JSON",
 		"ip": "127.0.0.1",
 		"port": 6789,
-		"websocket": 1,
-		"bechild": 1
+		"websocket": 1
 	}
 }

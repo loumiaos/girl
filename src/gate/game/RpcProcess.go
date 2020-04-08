@@ -1,7 +1,7 @@
 package game
 
 import (
-	"msg"
+	"gate/msg"
 
 	"github.com/snowyyj001/loumiao"
 	"github.com/snowyyj001/loumiao/gorpc"

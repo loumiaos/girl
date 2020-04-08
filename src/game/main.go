@@ -26,7 +26,7 @@ func init() {
 }
 
 func main() {
-	log.Info("server run!")
+	log.Info("world server run!")
 	//db connect
 	mysqldb.Dial(dbmodel.Models)
 	//redisdb.DialDefault()

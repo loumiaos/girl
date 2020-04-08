@@ -14,11 +14,4 @@ func StartGate() {
 }
 
 func OnClientConnected(uid int) {
-	loumiao.RegisterRpcHandler(uid, "C_S_Login")
-	loumiao.RegisterRpcHandler(uid, "S_C_Login")
-	loumiao.RegisterRpcHandler(uid, "C_S_JoinRoom")
-	loumiao.RegisterRpcHandler(uid, "S_C_JoinRoom")
-	loumiao.RegisterRpcHandler(uid, "R_C_JoinRoom")
-	loumiao.RegisterRpcHandler(uid, "R_C_SyncPlayers")
-
 }
