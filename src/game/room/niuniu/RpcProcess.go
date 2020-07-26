@@ -3,6 +3,7 @@ package niuniu
 import (
 	"fmt"
 	"game/define"
+	"game/msg"
 	"game/world/agent"
 
 	//"unsafe"
@@ -54,5 +55,15 @@ func handlerPlayerReady(igo gorpc.IGoRoutine, clientid int, data interface{}) in
 		return nil
 	}
 	room.ready(userId)
+	return nil
+}
+
+func handlerQZhuang(igo gorpc.IGoRoutine, clientid int, data interface{}) interface{} {
+	userId, room := This.GetRoomByClientId(clientid)
+	if room == nil {
+		return nil
+	}
+	m := data.(*msg.NN_RC_QZhuang)
+	room.qiangZhuang(userId, m.Flag)
 	return nil
 }

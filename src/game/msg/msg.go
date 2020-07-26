@@ -18,4 +18,9 @@ func init() {
 	message.RegisterPacket(&C_R_Ready{})
 	message.RegisterPacket(&NN_RC_TableInfo{})
 	message.RegisterPacket(&NN_RC_FaPai{})
+	message.RegisterPacket(&NN_RC_NoticeQZhuang{})
+	message.RegisterPacket(&NN_CR_QZhuang{})
+	message.RegisterPacket(&NN_RC_QZhuang{})
+	message.RegisterPacket(&NN_RC_DingZhuang{})
+
 }

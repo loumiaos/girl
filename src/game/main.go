@@ -4,10 +4,11 @@ import (
 	"game/config"
 	"game/room"
 
-	"dbmodel"
 	"game/db"
 	"game/gate"
 	"game/world"
+
+	"dbmodel"
 
 	"github.com/snowyyj001/loumiao"
 	"github.com/snowyyj001/loumiao/dbbase/mysqldb"

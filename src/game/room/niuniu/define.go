@@ -21,13 +21,17 @@ type FSMState int
 const (
 	FSM_Idle FSMState = iota
 	FSM_Fapai
+	FSM_QZhuang
+	FSM_KaiJiang
 	FSM_Bipai
 	FSM_Result
 )
 
 const (
-	Time_Idle   = 20
-	Time_FaPai  = 60
-	Time_BiPai  = 30
-	Time_Result = 10
+	Time_Idle     = 20 * 1000
+	Time_FaPai    = 5 * 1000
+	Time_QZhang   = 5 * 1000
+	Time_KaiJiang = 60 * 1000
+	Time_BiPai    = 30 * 1000
+	Time_Result   = 10 * 1000
 )

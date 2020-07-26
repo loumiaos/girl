@@ -25,6 +25,9 @@ type Room struct {
 	playerLen int
 
 	chairIds [MAX_SEAT]int
+
+	opNum      int
+	qiangLists []int
 }
 
 func (self *Room) doStart(roomid int) {
@@ -202,5 +205,30 @@ func (self *Room) ready(userId int) {
 	}
 	player.setRoomState(State_Ready)
 	req := &msg.R_C_Ready{UserId: userId}
+	self.BroastMsg(req, 0)
+}
+
+func (self *Room) autoReady() {
+	for _, player := range self.players {
+		player.setRoomState(State_Ready)
+	}
+}
+
+func (self *Room) getReadyNum() int {
+	cnt := 0
+	for _, player := range self.players {
+		if player.state == State_Ready {
+			cnt++
+		}
+	}
+	return cnt
+}
+
+func (self *Room) qiangZhuang(userid int, flag int) {
+	if flag == 1 {
+		self.qiangLists = append(self.qiangLists, userid)
+	}
+	self.opNum++
+	req := &msg.NN_RC_QZhuang{UserId: userid, Flag: flag}
 	self.BroastMsg(req, 0)
 }

@@ -32,6 +32,7 @@ func (self *GameServer) DoInit() {
 
 	loumiao.RegisterNetHandler(self, "C_R_SitDown", handlerSitDown)
 	loumiao.RegisterNetHandler(self, "C_R_Ready", handlerPlayerReady)
+	loumiao.RegisterNetHandler(self, "NN_CR_QZhuang", handlerQZhuang)
 }
 
 func (self *GameServer) DoRegsiter() {
